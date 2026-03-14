@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useLocale } from "@/lib/locale-context";
 import { t, type Locale } from "@/lib/i18n";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const locales: { value: Locale; label: string }[] = [
   { value: "en", label: "EN" },
@@ -12,26 +14,22 @@ const locales: { value: Locale; label: string }[] = [
   { value: "jp", label: "JP" },
 ];
 
-interface NavigationProps {
-  activeSection: string;
-  onNavigate: (section: string) => void;
-}
-
-export default function Navigation({ activeSection, onNavigate }: NavigationProps) {
+export default function Navigation() {
   const { locale, setLocale } = useLocale();
   const tr = t(locale);
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
-    { id: "home", label: tr.nav.home },
-    { id: "philosophy", label: tr.nav.philosophy },
-    { id: "experience", label: tr.nav.experience },
-    { id: "blog", label: tr.nav.blog },
+    { href: "/", label: tr.nav.home },
+    { href: "/philosophy", label: tr.nav.philosophy },
+    { href: "/experience", label: tr.nav.experience },
+    { href: "/blog", label: tr.nav.blog },
   ];
 
-  const handleNav = (id: string) => {
-    onNavigate(id);
-    setMobileOpen(false);
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
   };
 
   return (
@@ -44,27 +42,27 @@ export default function Navigation({ activeSection, onNavigate }: NavigationProp
       >
         <div className="rounded-2xl border border-zinc-200/60 bg-white/80 px-6 py-3 shadow-lg shadow-zinc-900/5 backdrop-blur-xl">
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => handleNav("home")}
+            <Link
+              href="/"
               className="cursor-pointer text-lg font-semibold tracking-tight text-zinc-900 transition-colors hover:text-blue-600"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               CS
-            </button>
+            </Link>
 
             <div className="hidden items-center gap-1 md:flex">
               {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNav(item.id)}
+                <Link
+                  key={item.href}
+                  href={item.href}
                   className={`cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                    activeSection === item.id
+                    isActive(item.href)
                       ? "bg-zinc-900 text-white"
                       : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                   }`}
                 >
                   {item.label}
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -106,17 +104,18 @@ export default function Navigation({ activeSection, onNavigate }: NavigationProp
             className="fixed inset-x-4 top-20 z-40 rounded-2xl border border-zinc-200/60 bg-white/95 p-4 shadow-xl backdrop-blur-xl md:hidden"
           >
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNav(item.id)}
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
                 className={`block w-full cursor-pointer rounded-lg px-4 py-3 text-left text-sm font-medium transition-all ${
-                  activeSection === item.id
+                  isActive(item.href)
                     ? "bg-zinc-900 text-white"
                     : "text-zinc-600 hover:bg-zinc-50"
                 }`}
               >
                 {item.label}
-              </button>
+              </Link>
             ))}
           </motion.div>
         )}

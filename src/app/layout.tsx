@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/locale-context";
+import NavigationWrapper from "@/components/NavigationWrapper";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -35,7 +36,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${spaceGrotesk.variable}`}>
       <body className="bg-[#FAFAFA] text-[#09090B] antialiased" style={{ fontFamily: "var(--font-body)" }}>
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider>
+          <NavigationWrapper />
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   );
