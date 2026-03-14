@@ -56,23 +56,39 @@ export default function ExperiencePage() {
 
         {/* Photo gallery */}
         <AnimatedSection className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image src="/IMG_3564.JPG" alt="Working at Mind AI office" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl sm:col-span-2">
+              <Image src="/IMG_3564.JPG" alt="Working at Mind AI office" fill className="object-cover" sizes="(max-width: 768px) 100vw, 66vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               <div className="absolute bottom-4 left-4">
                 <p className="text-sm font-medium text-white">Mind AI Office</p>
                 <p className="text-xs text-white/70">Seoul, South Korea</p>
               </div>
             </div>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl">
-              <Image src="/IMG_9853_Original.JPG" alt="Speaking at Cursor Hackathon Seoul" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl sm:aspect-auto">
+              <Image src="/IMG_9853_Original.JPG" alt="Speaking at Cursor Hackathon Seoul" fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               <div className="absolute bottom-4 left-4">
                 <p className="text-sm font-medium text-white">Cursor Hackathon Seoul</p>
                 <p className="text-xs text-white/70">Speaker & Builder</p>
               </div>
             </div>
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-4">
+            {[
+              { src: "/KyungHee.PNG", label: "KMOOC Lecture" },
+              { src: "/NC.JPG", label: "NCSOFT" },
+              { src: "/YBM1.JPG", label: "YBM Award" },
+              { src: "/KyungHee2.JPG", label: "Graduation" },
+            ].map((img) => (
+              <div key={img.src} className="relative aspect-square overflow-hidden rounded-xl">
+                <Image src={img.src} alt={img.label} fill className="object-cover transition-transform duration-500 hover:scale-105" sizes="25vw" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
+                <div className="absolute bottom-2 left-2 opacity-0 transition-opacity duration-300 hover:opacity-100">
+                  <p className="text-xs font-medium text-white">{img.label}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </AnimatedSection>
 

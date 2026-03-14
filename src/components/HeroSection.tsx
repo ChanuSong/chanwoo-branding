@@ -21,14 +21,14 @@ export default function HeroSection() {
   }, [tr.hero.roles.length]);
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pb-24">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-24 pb-16">
       {/* Subtle gradient background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-blue-100/40 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-zinc-100/60 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_auto]">
         {/* Text */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -59,10 +59,7 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          <p
-            className="mb-10 text-lg leading-relaxed text-zinc-600"
-            style={{ fontFamily: "var(--font-body)", maxWidth: "480px" }}
-          >
+          <p className="mb-10 max-w-xl text-balance text-lg leading-relaxed text-zinc-600" style={{ fontFamily: "var(--font-body)" }}>
             {tr.hero.tagline}
           </p>
 
@@ -82,14 +79,14 @@ export default function HeroSection() {
           transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="relative hidden lg:block"
         >
-          <div className="relative aspect-[3/4] overflow-hidden rounded-3xl">
+          <div className="relative h-[520px] w-[400px] overflow-hidden rounded-3xl">
             <Image
               src="/DSC01279.JPG"
               alt="Chanwoo Song"
               fill
-              className="object-cover object-[center_30%]"
+              className="object-cover object-[25%_25%]"
               priority
-              sizes="(max-width: 1024px) 0vw, 50vw"
+              sizes="400px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/20 via-transparent to-transparent" />
           </div>
