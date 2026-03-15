@@ -7,6 +7,9 @@ import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
 import Image from "next/image";
 import Link from "next/link";
+import MagneticButton from "./MagneticButton";
+
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function HeroSection() {
   const { locale } = useLocale();
@@ -20,81 +23,119 @@ export default function HeroSection() {
     return () => clearInterval(interval);
   }, [tr.hero.roles.length]);
 
+  const nameWords = tr.hero.name.split(" ");
+
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-24 pb-16">
-      {/* Subtle gradient background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-blue-100/40 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-zinc-100/60 blur-3xl" />
-      </div>
+    <section className="relative flex min-h-[100dvh] items-center overflow-hidden px-6 pt-24 pb-16">
+      {/* Noise texture overlay */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.02]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_auto]">
-        {/* Text */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <p className="mb-4 text-lg text-zinc-500" style={{ fontFamily: "var(--font-body)" }}>
-            {tr.hero.greeting}
-          </p>
-          <h1
-            className="mb-6 text-5xl font-bold leading-tight tracking-tight text-zinc-900 sm:text-6xl lg:text-7xl"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            {tr.hero.name}
-          </h1>
+      <div className="relative mx-auto w-full max-w-7xl">
+        <div className="grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+          {/* Text */}
+          <div>
+            {/* Greeting line reveal */}
+            <div className="mb-6 overflow-hidden">
+              <motion.p
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease }}
+                className="text-base text-zinc-400"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {tr.hero.greeting}
+              </motion.p>
+            </div>
 
-          <div className="mb-6 h-10 overflow-hidden">
-            <motion.div
-              key={roleIndex}
-              initial={{ y: 40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -40, opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="text-2xl font-semibold text-blue-600 sm:text-3xl"
-              style={{ fontFamily: "var(--font-heading)" }}
+            {/* Name — word-by-word reveal */}
+            <h1 className="mb-8" style={{ fontFamily: "var(--font-heading)" }}>
+              {nameWords.map((word, i) => (
+                <span key={i} className="inline-block overflow-hidden">
+                  <motion.span
+                    className="inline-block text-6xl font-bold leading-[1.05] tracking-[-0.03em] text-zinc-900 sm:text-7xl lg:text-8xl"
+                    initial={{ y: "110%", rotateX: -80 }}
+                    animate={{ y: 0, rotateX: 0 }}
+                    transition={{ duration: 1, delay: 0.4 + i * 0.08, ease }}
+                  >
+                    {word}
+                  </motion.span>
+                  {i < nameWords.length - 1 && "\u00A0"}
+                </span>
+              ))}
+            </h1>
+
+            {/* Role — animated ticker */}
+            <div className="mb-8 h-10 overflow-hidden">
+              <motion.div
+                key={roleIndex}
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -40, opacity: 0 }}
+                transition={{ duration: 0.5, ease }}
+                className="flex items-center gap-3"
+              >
+                <span className="h-px w-8 bg-blue-600" />
+                <span className="text-xl font-medium text-blue-600 sm:text-2xl" style={{ fontFamily: "var(--font-heading)" }}>
+                  {tr.hero.roles[roleIndex]}
+                </span>
+              </motion.div>
+            </div>
+
+            {/* Tagline */}
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8, ease }}
+              className="mb-12 max-w-[520px] text-balance text-lg leading-[1.7] text-zinc-500"
+              style={{ fontFamily: "var(--font-body)" }}
             >
-              {tr.hero.roles[roleIndex]}
+              {tr.hero.tagline}
+            </motion.p>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1, ease }}
+            >
+              <MagneticButton href="/philosophy" className="group inline-flex items-center gap-3 rounded-full bg-zinc-900 px-8 py-4 text-sm font-medium text-white transition-all duration-500 hover:bg-blue-600 hover:shadow-2xl hover:shadow-blue-600/25">
+                {tr.hero.cta}
+                <ArrowDown size={16} className="transition-transform duration-500 group-hover:translate-y-0.5" />
+              </MagneticButton>
             </motion.div>
           </div>
 
-          <p className="mb-10 max-w-xl text-balance text-lg leading-relaxed text-zinc-600" style={{ fontFamily: "var(--font-body)" }}>
-            {tr.hero.tagline}
-          </p>
-
-          <Link
-            href="/philosophy"
-            className="group cursor-pointer inline-flex items-center gap-2 rounded-full bg-zinc-900 px-8 py-4 text-sm font-medium text-white transition-all duration-300 hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-900/20"
+          {/* Photo — clean portrait with floating badge */}
+          <motion.div
+            initial={{ opacity: 0, clipPath: "inset(100% 0 0 0)" }}
+            animate={{ opacity: 1, clipPath: "inset(0% 0 0 0)" }}
+            transition={{ duration: 1.2, delay: 0.5, ease }}
+            className="relative hidden lg:block"
           >
-            {tr.hero.cta}
-            <ArrowDown size={16} className="transition-transform duration-300 group-hover:translate-y-0.5" />
-          </Link>
-        </motion.div>
+            <div className="relative h-[560px] w-full overflow-hidden rounded-[2rem]">
+              <Image
+                src="/DSC01279.JPG"
+                alt="Chanwoo Song"
+                fill
+                className="object-cover object-[25%_25%]"
+                priority
+                sizes="(max-width: 1024px) 0vw, 45vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/30 via-transparent to-transparent" />
+            </div>
 
-        {/* Photo */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="relative hidden lg:block"
-        >
-          <div className="relative h-[520px] w-[400px] overflow-hidden rounded-3xl">
-            <Image
-              src="/DSC01279.JPG"
-              alt="Chanwoo Song"
-              fill
-              className="object-cover object-[25%_25%]"
-              priority
-              sizes="400px"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/20 via-transparent to-transparent" />
-          </div>
-          <div className="absolute -bottom-6 -left-4 rounded-2xl border border-zinc-200 bg-white/90 px-5 py-3 shadow-lg backdrop-blur-sm">
-            <p className="text-sm font-medium text-zinc-900">{tr.about.currentRole}</p>
-            <p className="text-xs text-zinc-500">{tr.about.location}</p>
-          </div>
-        </motion.div>
+            {/* Floating badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.5, ease }}
+              className="absolute -bottom-5 left-6 rounded-xl border border-zinc-200 bg-white px-5 py-3 shadow-xl"
+            >
+              <p className="text-sm font-semibold text-zinc-900">{tr.about.currentRole}</p>
+              <p className="text-xs text-zinc-500">{tr.about.location}</p>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
